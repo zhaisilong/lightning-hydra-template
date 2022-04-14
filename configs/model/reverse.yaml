@@ -1,0 +1,10 @@
+_target_: src.models.reverse_module.ReversePredictor
+max_iters: 100
+input_dim: 10
+model_dim: 32
+num_heads: 1
+num_classes: 10
+num_layers: 1
+dropout: 0.0
+lr: 5e-4
+warmup: 500

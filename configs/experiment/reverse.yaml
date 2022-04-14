@@ -1,0 +1,23 @@
+# @package _global_
+
+defaults:
+  - override /datamodule: reverse.yaml
+  - override /model: reverse.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: default.yaml
+
+name: "reverse_transformer"
+
+seed: 42
+
+trainer:
+  max_epochs: 10
+  gradient_clip_val: 5
+  gpus: 1
+  progress_bar_refresh_rate: 1
+
+logger:
+  wandb:
+    tags: ["reversetransformer", "${name}"]
+  _default_hp_metric: None
