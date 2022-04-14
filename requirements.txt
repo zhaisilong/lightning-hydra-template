@@ -23,9 +23,13 @@ isort           # import sorting
 flake8          # code analysis
 nbstripout      # remove output from jupyter notebooks
 
+# ------ visilization ------ #
+matplotlib      # plot
+
 # --------- others --------- #
 python-dotenv   # loading env variables from .env file
 rich            # beautiful text formatting in terminal
 pytest          # tests
 sh              # for running bash commands in some tests
 pudb            # debugger
+

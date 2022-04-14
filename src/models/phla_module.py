@@ -5,6 +5,7 @@ from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class PHLALitModule(LightningModule):
     def __init__(
