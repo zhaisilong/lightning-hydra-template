@@ -1,0 +1,9 @@
+_target_: src.datamodules.peptide_datamodule.PeptideModule
+
+
+train_data_path: ${data_dir}/peptide/train.csv
+val_data_path: ${data_dir}/peptide/test.csv
+test_data_path: ${data_dir}/peptide/test.csv
+batch_size: 4096
+
+
