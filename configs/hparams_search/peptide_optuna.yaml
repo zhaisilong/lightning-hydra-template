@@ -46,27 +46,27 @@ hydra:
     search_space:
       datamodule.batch_size:
         type: categorical
-        choices: [1024, 2048, 4096]
+        choices: [1024, 2048, 4096, 8192]
       model.lr:
         type: float
-        low: 0.001
-        high: 0.02
+        low: 0.0001
+        high: 0.01
       model.weight_decay:
         type: float
         low: 0.01
         high: 0.1
       model.net.c_hidden:
         type: categorical
-        choices: [12, 24, 32, 48, 64]
+        choices: [6, 12, 24, 32, 48, 64, 128]
       model.net.num_layers:
         type: categorical
-        choices: [2, 3, 4]
+        choices: [2, 3, 4, 6]
       model.net.layer_name:
         type: categorical
         choices: [GCN, GAT, GraphConv]
       model.net.dp_rate:
         type: categorical
-        choices: [0.05, 0.1, 0.15]
+        choices: [0.05, 0.1, 0.15, 0.2, 0.25]
       model.net.dp_rate_linear:
         type: categorical
-        choices: [0.2, 0.3, 0.4]
+        choices: [0.1, 0.2, 0.3, 0.4]

@@ -11,8 +11,8 @@ net:
   _target_: src.models.components.gnn.GraphGNNModel
   c_in: 22
   c_out: 1
-  c_hidden: 32
-  num_layers: 3
+  c_hidden: 24
+  num_layers: 4
   # "GCN": geom_nn.GCNConv, "GAT": geom_nn.GATConv, "GraphConv": geom_nn.GraphConv
   layer_name: "GraphConv"
   dp_rate: 0.1
