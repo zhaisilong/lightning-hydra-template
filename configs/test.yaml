@@ -3,8 +3,8 @@
 # specify here default evaluation configuration
 defaults:
   - _self_
-  - datamodule: phla.yaml # choose the datamodule for evaluation
-  - model: phla.yaml
+  - datamodule: peptide.yaml # choose the datamodule for evaluation
+  - model: peptide.yaml
   - callbacks: null
   - logger: null
   - trainer: default.yaml
@@ -26,7 +26,7 @@ ignore_warnings: True
 
 seed: null
 
-name: "phla"
+name: "peptide_gnn"
 
 # passing checkpoint path is necessary
-ckpt_path: ${original_work_dir}/logs/experiments/runs/phla_transformer/2022-04-14_15-51-37/checkpoints/epoch_007.ckpt
+ckpt_path: ${original_work_dir}/logs/experiments/multiruns/peptide_gnn/2022-05-20_12-20-08/21/checkpoints/epoch_079.ckpt

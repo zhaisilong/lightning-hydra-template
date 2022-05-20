@@ -28,10 +28,15 @@ def get_edge_index(peptides: str):
     b.append(0)
     return torch.tensor([a, b], dtype=torch.long)  # 索引的数值类型必须 long
 
-def make_data(df):
+def make_data(df, data_type: Optional[str] = None):
     # 构建数据集，转换为张量
     dataset = []
     len_df = len(df)
+
+    if data_type:
+        print(f'processing {data_type} data')
+    else:
+        print('processing data')
 
     for i in tqdm.trange(len_df):
         paded_peptides = df.paded_sentence[i]
@@ -60,12 +65,24 @@ class PeptideModule(LightningDataModule):
         self._train_data = pd.read_csv(self.hparams.train_data_path, index_col=0)
         self._val_data = pd.read_csv(self.hparams.val_data_path, index_col=0)
         self._test_data = pd.read_csv(self.hparams.test_data_path, index_col=0)
+        self._predict_data = pd.read_csv(self.hparams.test_data_path, index_col=0)
 
-        # Transform into Tensor
-        self.train_data = make_data(self._train_data)
-        self.val_data = make_data(self._val_data)
-        self.test_data = make_data(self._test_data)
 
+
+    def setup(self, stage: Optional[str] = None):
+
+        # Assign train/val datasets for use in dataloaders
+        if stage == "fit" or stage is None:
+            self.train_data = make_data(self._train_data, 'fit/train')
+            self.val_data = make_data(self._val_data, 'fit/val')
+            self.test_data = make_data(self._test_data, 'fit/test')
+
+        # Assign test dataset for use in dataloader(s)
+        if stage == "test" or stage is None:
+            self.test_data = make_data(self._test_data, 'test')
+
+        if stage == "predict" or stage is None:
+            self.predict_data = make_data(self._predict_data, "predict")
 
     def train_dataloader(self):
         return DataLoader(self.train_data, self.hparams.batch_size, num_workers=12, shuffle=True)
@@ -75,6 +92,9 @@ class PeptideModule(LightningDataModule):
 
     def test_dataloader(self):
         return DataLoader(self.test_data, self.hparams.batch_size, shuffle=False, num_workers=12)
+
+    def predict_dataloader(self):
+        return DataLoader(self.predict_data, batch_size=32)
 
 
 

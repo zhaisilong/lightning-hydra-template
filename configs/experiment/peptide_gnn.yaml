@@ -14,13 +14,13 @@ name: "peptide_gnn"
 seed: 42
 
 trainer:
-  max_epochs: 20
+  max_epochs: 1000
   gradient_clip_val: 5
   gpus: 1
   progress_bar_refresh_rate: 1
 
-# for test
-# passing checkpoint path is necessary
-ckpt_path: ${original_work_dir}/logs/experiments/runs/peptide_gnn/2022-05-19_15-49-35/tensorboard/peptide_gnn/checkpoints/epoch=97-step=1078.ckpt
+hparams_search: peptide_optuna.yaml
+#hparams_search: null
+
 
 
