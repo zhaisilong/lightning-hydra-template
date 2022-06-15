@@ -13,9 +13,9 @@ log = utils.get_logger(__name__)
 
 
 # 生成节点属性
-token2int = {x: i for i, x in enumerate('GAVLIPFYWSTCMNQDEKRHXZ')}
+token2int = {x: i for i, x in enumerate('GAVLIPFYWSTCMNQDEKRHX')}
 onehot = F.one_hot(torch.tensor([i for i in token2int.values()])).numpy()
-token2onehot = {x: oh for x, oh in zip(list('GAVLIPFYWSTCMNQDEKRHXZ'), onehot)}
+token2onehot = {x: oh for x, oh in zip(list('GAVLIPFYWSTCMNQDEKRHX'), onehot)}
 int2token = {v: k for k, v in token2int.items()}
 
 
@@ -29,13 +29,12 @@ def get_X(peptides: str):
 
 # 生成边索引
 def get_edge_index(peptides: str):
-    l = len(peptides.rstrip('X'))
-    a = [i for i in range(0, l - 1)]
-    a.append(l - 1)
-    b = [j for j in range(1, l)]
-    b.append(0)
+    """一维序列生成边索引
+    """
+    length = len(peptides)
+    a = [i for i in range(0, length-1)]
+    b = [j for j in range(1, length)]
     return torch.tensor([a, b], dtype=torch.long)  # 索引的数值类型必须 long
-
 
 def make_data(df, data_type: Optional[str] = None):
     # 构建数据集，转换为张量
@@ -48,13 +47,12 @@ def make_data(df, data_type: Optional[str] = None):
         log.info('processing data')
 
     for i in tqdm.trange(len_df):
-        paded_peptides = df.paded_sentence[i]
+        hla_peptide = df.peptide[i] + 'X' + df.HLA_sequence[i]
         dataset.append(Data(
-            x=get_X(paded_peptides),
-            edge_index=get_edge_index(paded_peptides),
+            x=get_X(hla_peptide),  # 编码特征使用 多肽 + hla
+            edge_index=get_edge_index(df.peptide[i]), # 边特征只用多肽
             y=torch.tensor(df.label[i], dtype=torch.long),
-            v=torch.tensor(df.enrich[i], dtype=torch.float),
-            pp=df.sentence[i]))
+            pp=hla_peptide))  # pp 用于记录对应的 item
 
     return dataset
 
@@ -77,17 +75,12 @@ class PeptideModule(LightningDataModule):
         self._test_data = pd.read_csv(self.hparams.test_data_path, index_col=0)
         self._predict_data = pd.read_csv(self.hparams.test_data_path, index_col=0)
 
-        # self.class_sample_count = [
-        #     len(self._train_data[self._train_data['label'] == 0]),
-        #     len(self._train_data[self._train_data['label'] == 1])
-        # ]
+        if self.hparams.toy_data:
+            self._train_data = self._train_data[:100000]
+            self._val_data = self._val_data[:1000]
+            self._test_data = self._test_data[:1000]
+            self._predict_data = self._predict_data[:1000]
 
-    # def get_sampler(self):
-    #     # dataset has 10 class-1 samples, 1 class-2 samples, etc.
-    #     weights = 1 / torch.Tensor(self.class_sample_count)
-    #     # 注意这里的 weights 应为所有样本的权重序列，其长度为所有样本长度。
-    #     return torch.utils.data.sampler.WeightedRandomSampler(weights,
-    #                                                           self.hparams.batch_size)
 
     def setup(self, stage: Optional[str] = None):
 

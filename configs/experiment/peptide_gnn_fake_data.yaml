@@ -1,7 +1,7 @@
 # @package _global_
 
 defaults:
-  - override /datamodule: peptide.yaml
+  - override /datamodule: fake_peptide.yaml
   - override /model: peptide.yaml
   - override /callbacks: peptide.yaml
   - override /logger: tensorboard.yaml
@@ -9,9 +9,9 @@ defaults:
 
 
 
-name: "peptide_gnn"
+name: "fake_peptide_gnn"
 
-seed: 1234
+seed: 123
 
 trainer:
   max_epochs: 1000
@@ -21,6 +21,9 @@ trainer:
 
 hparams_search: peptide_optuna.yaml
 #hparams_search: null
+
+# 要求有超参数
+result_path: ${data_dir}/fake_peptide/${hydra:job.num}
 
 
 

@@ -1,0 +1,29 @@
+_target_: src.models.peptide_module.GraphLevelGNN
+lr: 0.001
+weight_decay: 0.05
+
+# 要求有超参数
+result_path: ${data_dir}/results/balanced_peptide/${hydra:job.num}
+
+net:
+  _target_: src.models.components.gnn.GMT
+  c_in: 22
+  c_out: 1
+  c_hidden: 32
+  avg_num_nodes: 20
+  dp_rate_linear: 0.2
+  pooling_ratio: 0.3
+  pooling_num_heads: 8
+  layer_norm: False
+
+loss:
+  _target_: src.models.components.loss.FocalLoss
+  gamma: 2
+  alpha: 0.25
+  reduction: 'mean'
+  smooth: 0.8
+
+#loss:
+#  _target_: src.models.components.loss.DiceBCELoss
+#  smooth: 0.9
+

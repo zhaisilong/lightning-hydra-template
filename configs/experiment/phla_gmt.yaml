@@ -1,17 +1,23 @@
 # @package _global_
 
 defaults:
-  - override /datamodule: peptide.yaml
-  - override /model: peptide.yaml
+  - override /datamodule: phla_gmt.yaml
+  - override /model: phla_gmt.yaml
   - override /callbacks: peptide.yaml
   - override /logger: tensorboard.yaml
   - override /trainer: default.yaml
 
+name: "phla_gmt"
 
+seed: 42
 
-name: "peptide_gnn"
+datamodule:
+  batch_size: 4096
+  toy_data: False
 
-seed: 1234
+callbacks:
+  early_stopping:
+    patience: 40
 
 trainer:
   max_epochs: 1000
@@ -19,8 +25,10 @@ trainer:
   gpus: 1
   progress_bar_refresh_rate: 1
 
-hparams_search: peptide_optuna.yaml
+#hparams_search: peptide_optuna_gmt.yaml
 #hparams_search: null
+
+
 
 
 

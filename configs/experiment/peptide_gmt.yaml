@@ -2,16 +2,16 @@
 
 defaults:
   - override /datamodule: peptide.yaml
-  - override /model: peptide.yaml
+  - override /model: peptide_gmt.yaml
   - override /callbacks: peptide.yaml
   - override /logger: tensorboard.yaml
   - override /trainer: default.yaml
 
 
 
-name: "peptide_gnn"
+name: "peptide_gmt_balanced"
 
-seed: 1234
+seed: 42
 
 trainer:
   max_epochs: 1000
@@ -19,8 +19,10 @@ trainer:
   gpus: 1
   progress_bar_refresh_rate: 1
 
-hparams_search: peptide_optuna.yaml
+hparams_search: peptide_optuna_gmt.yaml
 #hparams_search: null
+
+
 
 
 
