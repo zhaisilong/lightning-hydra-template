@@ -1,0 +1,19 @@
+# @package _global_
+
+defaults:
+  - override /datamodule: tmp.yaml
+  - override /model: tmp.yaml
+  - override /callbacks: tmp.yaml
+  - override /logger: tensorboard.yaml
+  - override /trainer: default.yaml
+
+name: "tmp"
+
+seed: 42
+
+trainer:
+  max_epochs: 1000
+  gradient_clip_val: 5
+  gpus: 1
+  progress_bar_refresh_rate: 1
+

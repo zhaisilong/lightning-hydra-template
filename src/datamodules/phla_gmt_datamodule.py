@@ -1,16 +1,16 @@
 from typing import Optional
 import torch.nn.functional as F
 import pandas as pd
-import tqdm
+from rich.progress import track
 import torch
 from torch_geometric.data import Data, Dataset
 from torch_geometric.loader import DataLoader
 from pytorch_lightning import LightningDataModule
+import numpy as np
 
 from src import utils
 
 log = utils.get_logger(__name__)
-
 
 # 生成节点属性
 token2int = {x: i for i, x in enumerate('GAVLIPFYWSTCMNQDEKRHX')}
@@ -24,7 +24,7 @@ def onehot2token(tensors):
 
 
 def get_X(peptides: str):
-    return torch.tensor([token2onehot[x] for x in peptides], dtype=torch.float)
+    return torch.tensor(np.array([token2onehot[x] for x in peptides]), dtype=torch.float)
 
 
 # 生成边索引
@@ -32,9 +32,20 @@ def get_edge_index(peptides: str):
     """一维序列生成边索引
     """
     length = len(peptides)
-    a = [i for i in range(0, length-1)]
+    a = [i for i in range(0, length - 1)]
     b = [j for j in range(1, length)]
     return torch.tensor([a, b], dtype=torch.long)  # 索引的数值类型必须 long
+
+def get_edge_index_with_sep(peptides: str):
+    """
+    ABCXEDF -> [[0,1,4,5], [1,2,5,6]]
+    """
+    part_a, part_b = peptides.split('X')
+    len_a, len_b = len(part_a), len(part_b)
+    _from = [a_i for a_i in range(0, len_a - 1)] + [a_j for a_j in range(len_a + 1, len_a + len_b)]
+    _to = [i + 1 for i in _from]
+    return torch.tensor(np.array([_from, _to]), dtype=torch.long)
+
 
 def make_data(df, data_type: Optional[str] = None):
     # 构建数据集，转换为张量
@@ -46,11 +57,15 @@ def make_data(df, data_type: Optional[str] = None):
     else:
         log.info('processing data')
 
-    for i in tqdm.trange(len_df):
+
+    # for i in tqdm.trange(len_df):
+    for i in track(range(len_df), description="Processing..."):
         hla_peptide = df.peptide[i] + 'X' + df.HLA_sequence[i]
         dataset.append(Data(
             x=get_X(hla_peptide),  # 编码特征使用 多肽 + hla
-            edge_index=get_edge_index(df.peptide[i]), # 边特征只用多肽
+            # x=get_X(df.peptide[i]),  # 只编码多肽
+            # edge_index=get_edge_index(df.peptide[i]),  # 边特征只用多肽
+            edge_index=get_edge_index_with_sep(hla_peptide),
             y=torch.tensor(df.label[i], dtype=torch.long),
             pp=hla_peptide))  # pp 用于记录对应的 item
 
@@ -81,7 +96,6 @@ class PeptideModule(LightningDataModule):
             self._test_data = self._test_data[:1000]
             self._predict_data = self._predict_data[:1000]
 
-
     def setup(self, stage: Optional[str] = None):
 
         # Assign train/val datasets for use in dataloaders
@@ -100,13 +114,13 @@ class PeptideModule(LightningDataModule):
     def train_dataloader(self):
         # sampler 不能和 shuffle 搭配
         # return DataLoader(self.train_data, self.hparams.batch_size, num_workers=12, sampler=self.get_sampler())
-        return DataLoader(self.train_data, self.hparams.batch_size, shuffle=True, num_workers=12)
+        return DataLoader(self.train_data, self.hparams.batch_size, shuffle=True, num_workers=6)
 
     def val_dataloader(self):
-        return DataLoader(self.test_data, self.hparams.batch_size, shuffle=True, num_workers=12)
+        return DataLoader(self.test_data, self.hparams.batch_size, shuffle=True, num_workers=6)
 
     def test_dataloader(self):
-        return DataLoader(self.test_data, self.hparams.batch_size, shuffle=False, num_workers=12)
+        return DataLoader(self.test_data, self.hparams.batch_size, shuffle=False, num_workers=6)
 
     def predict_dataloader(self):
         return DataLoader(self.predict_data, batch_size=32)

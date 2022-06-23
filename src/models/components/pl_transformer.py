@@ -144,6 +144,7 @@ class PositionalEncoding(nn.Module):
         self.register_buffer("pe", pe, persistent=False)
 
     def forward(self, x):
+        print(x.size(), self.pe.size(), self.pe[:, : x.size(1)].size())
         x = x + self.pe[:, : x.size(1)]
         return x
 
@@ -238,6 +239,8 @@ class TransformerPredictor(pl.LightningModule):
             max_iters,
             dropout=0.0,
             input_dropout=0.0,
+            *args,
+            **kwargs
     ):
         """
         Args:

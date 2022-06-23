@@ -7,6 +7,7 @@ from torchmetrics.classification.accuracy import Accuracy
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
 class PHLALitModule(LightningModule):
     def __init__(
             self,
@@ -38,6 +39,7 @@ class PHLALitModule(LightningModule):
     def step(self, batch: Any):
         pep, hla, y = batch
         logits, _, _, attns = self.forward(pep, hla)
+
         loss = self.criterion(logits, y)
         preds = torch.argmax(logits, dim=1)
         return loss, preds, y

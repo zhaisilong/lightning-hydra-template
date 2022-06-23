@@ -1,0 +1,11 @@
+_target_: src.models.transformer_module.PepSmiLitModuleV2
+src_vocab: 519
+lr: 0.001
+weight_decay: 0.005
+max_len: 260
+N: 1
+d_model: 128
+d_ff: 256
+h: 4
+dropout: 0.1
+num_classes: 1

@@ -212,6 +212,7 @@ class Transformer(nn.Module):
         ).to(device)
 
     def forward(self, pep_inputs, hla_inputs):
+
         pep_enc_outputs, pep_enc_self_attns = self.pep_encoder(pep_inputs)
         hla_enc_outputs, hla_enc_self_attns = self.hla_encoder(hla_inputs)
         enc_outputs = torch.cat((pep_enc_outputs, hla_enc_outputs), 1)  # concat pep & hla embedding

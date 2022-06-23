@@ -28,7 +28,8 @@ flake8          # code analysis
 nbstripout      # remove output from jupyter notebooks
 
 # ------ visilization ------ #
-matplotlib      # plot
+matplotlib       # plot
+pandas-profiling # pandas analysis
 
 # ----- chemistry --------#
 # selfies         # selfies tokenizers

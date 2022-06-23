@@ -1,29 +1,26 @@
 # @package _global_
 
 defaults:
-  - override /datamodule: phla_gmt.yaml
-  - override /model: phla_gmt.yaml
+  - override /datamodule: peptide_smi_transformer.yaml
+  - override /model: peptide_smi_transformer.yaml
   - override /callbacks: peptide.yaml
   - override /logger: tensorboard.yaml
   - override /trainer: default.yaml
 
-name: "phla_gmt"
+name: "peptide_smi_transformer"
 
 seed: 42
 
 datamodule:
-  batch_size: 4096
+  batch_size: 256
   toy_data: False
 
 callbacks:
   early_stopping:
-    patience: 100
+    patience: 40
 
 trainer:
-  max_epochs: 10000
+  max_epochs: 1000
   gradient_clip_val: 5
   gpus: 1
   progress_bar_refresh_rate: 1
-
-#hparams_search: peptide_optuna_gmt.yaml
-#hparams_search: null
