@@ -7,7 +7,7 @@ defaults:
   - override /logger: tensorboard.yaml
   - override /trainer: default.yaml
 
-name: "peptide_smi_transformer"
+name: "peptide_smi_transformer_balanced_B27_05"
 
 seed: 42
 

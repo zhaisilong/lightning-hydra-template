@@ -1,8 +1,8 @@
 _target_: src.datamodules.pepsmi_datamodule.Peptide_smilesModuleV2
 
-train_data_path: ${data_dir}/AOMP_B27_05/train_balanced.csv
-val_data_path: ${data_dir}/AOMP_B27_05/val_balanced.csv
-test_data_path: ${data_dir}/AOMP_B27_05/test_balanced.csv
+train_data_path: ${data_dir}/AOMP_B27_05/train_unbalanced.txt
+val_data_path: ${data_dir}/AOMP_B27_05/val_unbalanced.txt
+test_data_path: ${data_dir}/AOMP_B27_05/test_unbalanced.txt
 vocab_path: ${data_dir}/AOMP/vocab.txt
 batch_size: 2048
 toy_data: True
