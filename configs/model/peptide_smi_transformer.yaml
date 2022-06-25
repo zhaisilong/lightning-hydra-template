@@ -1,4 +1,4 @@
-_target_: src.models.transformer_module.PepSmiLitModuleV3
+_target_: src.models.transformer_module.PepSmiLitModuleV4
 src_vocab: 519
 lr: 0.0001
 weight_decay: 0.005
@@ -10,3 +10,4 @@ h: 4
 dropout: 0.1
 num_classes: 1
 d_net_head: 128
+d_hla: 5

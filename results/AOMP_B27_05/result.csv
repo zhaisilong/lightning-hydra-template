@@ -1,4 +1,4 @@
-,data_set,trian_acc,test_loss,loss,data_total,pn_rate
-0,balanced,0.71,0.59,BCE,80k,0.50
-1,unbalanced,0.83,0.41,BCE,200k,0.79,
-2,unbalanced,,,Focal,200k,0.79,
+ ,data_set  ,trian_acc,test_loss,loss ,data_total,pn_rate,note
+0,balanced  ,0.71     ,0.59     ,BCE  ,80k       ,0.50   ,
+1,unbalanced,0.83     ,0.41     ,BCE  ,200k      ,0.79   ,
+2,unbalanced,0.83     ,25       ,Focal,200k      ,0.79   ,数据达到上限
