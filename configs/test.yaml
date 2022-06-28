@@ -27,5 +27,5 @@ ignore_warnings: True
 seed: null
 
 # passing checkpoint path is necessary
-ckpt_path: ${original_work_dir}/logs/experiments/runs/peptide_smi_transformer_balanced_B27_05/2022-06-24_09-42-19/checkpoints/epoch_023.ckpt
+ckpt_path: ${original_work_dir}/logs/experiments/runs/phla_transformer/2022-06-27_22-34-21/checkpoints/epoch_002.ckpt
 

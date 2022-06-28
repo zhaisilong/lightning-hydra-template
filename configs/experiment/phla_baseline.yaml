@@ -15,13 +15,12 @@ defaults:
 # this allows you to overwrite only specified parameters
 
 # name of the run determines folder name in logs
-name: "phla_transformer"
+name: "phla_baseline"
 
-seed: 1234
+seed: 42
 
 trainer:
   min_epochs: 10
   max_epochs: 1000
-  gradient_clip_val: 0.5
   gpus: 1
 

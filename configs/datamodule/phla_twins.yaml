@@ -2,8 +2,7 @@ _target_: src.datamodules.phla_datamodule.MyDataModule
 
 val_data_path: ${data_dir}/AOMP/val_data_fold0.csv
 train_data_path: ${data_dir}/AOMP/train_data_fold0.csv
-batch_size: 1024
-vocab_dict_path: ${data_dir}/AOMP/vocab_dict.npy
 test_data_path: ${data_dir}/AOMP/independent_set.csv
+batch_size: 1024
 
 

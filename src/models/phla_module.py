@@ -4,6 +4,7 @@ import torch
 from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
+from torchmetrics.classification.auroc import AUROC
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -29,6 +30,8 @@ class PHLALitModule(LightningModule):
         self.train_acc = Accuracy()
         self.val_acc = Accuracy()
         self.test_acc = Accuracy()
+        self.val_auroc = AUROC(num_classes=1)
+        self.test_auroc = AUROC(num_classes=1)
 
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
@@ -59,7 +62,9 @@ class PHLALitModule(LightningModule):
 
         # log val metrics
         acc = self.val_acc(preds, targets)
+        auroc = self.val_auroc(preds, targets, )
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+        self.log("val/auroc", auroc, on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
@@ -67,14 +72,18 @@ class PHLALitModule(LightningModule):
     def validation_epoch_end(self, outputs: List[Any]):
         acc = self.val_acc.compute()  # get val accuracy from current epoch
         self.val_acc_best.update(acc)
+        val_acc_best = self.val_acc_best.compute()
         self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
+        self.log("hp_metric", val_acc_best, on_epoch=True, prog_bar=False)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
         # log test metrics
         acc = self.test_acc(preds, targets)
+        auc = self.test_auroc(preds, targets)
         self.log("test/loss", loss, on_step=False, on_epoch=True)
+        self.log("test/auc", auc, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
@@ -84,6 +93,8 @@ class PHLALitModule(LightningModule):
         self.train_acc.reset()
         self.test_acc.reset()
         self.val_acc.reset()
+        self.val_auroc.reset()
+        self.test_auroc.reset()
 
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.

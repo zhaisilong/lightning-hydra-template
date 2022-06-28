@@ -1,8 +1,0 @@
-_target_: src.datamodules.pepsmi_datamodule.Peptide_smilesModuleV0
-
-train_data_path: ${data_dir}/AOMP/train_data_fold0.csv
-val_data_path: ${data_dir}/AOMP/val_data_fold0.csv
-test_data_path: ${data_dir}/AOMP/independent_set.csv
-vocab_path: ${data_dir}/AOMP/vocab.txt
-batch_size: 512
-toy_data: False
