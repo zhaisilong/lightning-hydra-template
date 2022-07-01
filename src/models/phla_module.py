@@ -5,6 +5,8 @@ from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 from torchmetrics.classification.auroc import AUROC
+import torch.nn.functional as F
+from transformers import get_cosine_schedule_with_warmup
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -30,8 +32,8 @@ class PHLALitModule(LightningModule):
         self.train_acc = Accuracy()
         self.val_acc = Accuracy()
         self.test_acc = Accuracy()
-        self.val_auroc = AUROC(num_classes=1)
-        self.test_auroc = AUROC(num_classes=1)
+        self.val_auroc = AUROC(num_classes=2)
+        self.test_auroc = AUROC(num_classes=2)
 
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
@@ -41,30 +43,40 @@ class PHLALitModule(LightningModule):
 
     def step(self, batch: Any):
         pep, hla, y = batch
-        logits, _, _, attns = self.forward(pep, hla)
+        logits, _, _, attns = self.forward(pep, hla)  # [b, 2]
 
         loss = self.criterion(logits, y)
         preds = torch.argmax(logits, dim=1)
-        return loss, preds, y
+
+        return loss, preds, y, logits
+
+    def on_train_start(self):
+        # by default lightning executes validation step sanity checks before training starts,
+        # so we need to make sure val_acc_best doesn't store accuracy from these checks
+        self.val_acc_best.reset()
 
     def training_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds, targets, logits = self.step(batch)
 
         # log train metrics
         acc = self.train_acc(preds, targets)
+
         self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds, targets, logits = self.step(batch)
+
+        probs = F.softmax(logits)
 
         # log val metrics
         acc = self.val_acc(preds, targets)
-        auroc = self.val_auroc(preds, targets, )
+        auroc = self.val_auroc(probs, targets)
+
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("val/auroc", auroc, on_step=False, on_epoch=True, prog_bar=False)
+        self.log("val/auroc", auroc, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
@@ -73,15 +85,19 @@ class PHLALitModule(LightningModule):
         acc = self.val_acc.compute()  # get val accuracy from current epoch
         self.val_acc_best.update(acc)
         val_acc_best = self.val_acc_best.compute()
-        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
-        self.log("hp_metric", val_acc_best, on_epoch=True, prog_bar=False)
+
+        self.log("val/acc_best", val_acc_best, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("hp_metric", val_acc_best, on_step=False, on_epoch=True, prog_bar=False)
 
     def test_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds, targets, logits = self.step(batch)
+
+        probs = F.softmax(logits)
 
         # log test metrics
         acc = self.test_acc(preds, targets)
-        auc = self.test_auroc(preds, targets)
+        auc = self.test_auroc(probs, targets)
+
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/auc", auc, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
@@ -103,6 +119,9 @@ class PHLALitModule(LightningModule):
         See examples here:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
-        return torch.optim.Adam(
+        opt = torch.optim.Adam(
             params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
         )
+        LR = get_cosine_schedule_with_warmup(opt, 10, 300)
+
+        return {'optimizer': opt, 'lr_scheduler': LR}

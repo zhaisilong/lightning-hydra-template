@@ -1,6 +1,6 @@
 _target_: src.models.phla_gmt_module.GraphLevelGNN
-lr: 0.001
-weight_decay: 0.005
+lr: 0.0006
+weight_decay: 0.0033
 
 # 要求有超参数
 result_path: ${data_dir}/results/phla_gmt/${hydra:job.num}
@@ -9,10 +9,10 @@ net:
   _target_: src.models.components.gnn.GMT
   c_in: 21
   c_out: 1
-  c_hidden: 32
+  c_hidden: 64
   avg_num_nodes: 20
   dp_rate_linear: 0.1
-  pooling_ratio: 0.2
+  pooling_ratio: 0.3
   pooling_num_heads: 8
   layer_norm: True
 

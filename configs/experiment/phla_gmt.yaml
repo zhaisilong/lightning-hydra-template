@@ -12,16 +12,15 @@ name: "phla_gmt"
 seed: 42
 
 datamodule:
-  batch_size: 4096
-  toy_data: False
+  batch_size: 2048
+  toy_data: false
 
 callbacks:
   early_stopping:
-    patience: 100
+    patience: 70
 
 trainer:
   max_epochs: 10000
-  gradient_clip_val: 5
   gpus: 1
   progress_bar_refresh_rate: 1
 

@@ -1,0 +1,10 @@
+_target_: src.datamodules.phla_datamodule.SmilesDataModel
+
+val_data_path: ${data_dir}/AOMP_SMILES/val.csv
+train_data_path: ${data_dir}/AOMP_SMILES/train.csv
+test_data_path: ${data_dir}/AOMP_SMILES/test.csv
+batch_size: 1024
+tokenizer_path: ${data_dir}/AOMP_SMILES/tokenizer-smiles.json
+max_len: 150
+
+
