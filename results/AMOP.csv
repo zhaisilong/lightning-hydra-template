@@ -1,0 +1,9 @@
+name,test_acc,test_auc,test_loss,epoch,batch_size,
+baseline,0.921,0.870,,145,1024,
+kmeans,0.930,0.963,0.185,65,2048,
+smiles,0.861,0.834,,61,1024,
+gmt,0.883,0.933,,145,2048,
+kmeans_smooth,0.82,0.89,0.69,4,2048,极其差
+label_reverse,0.930,0.963,0.184,83,2048,强迫模型去学习
+kmeans_peponly,0.851,0.914,0.348,84,2048,前期训练波动大
+bert,

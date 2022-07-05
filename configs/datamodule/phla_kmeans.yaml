@@ -1,0 +1,7 @@
+_target_: src.datamodules.phla_datamodule.MyDataModule
+
+val_data_path: ${data_dir}/AOMP_KMEANS/val.csv
+train_data_path: ${data_dir}/AOMP_KMEANS/train.csv
+batch_size: 2048
+vocab_dict_path: ${data_dir}/AOMP/vocab_dict.npy
+test_data_path: ${data_dir}/AOMP_KMEANS/independent_set.csv

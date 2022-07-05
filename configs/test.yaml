@@ -27,4 +27,4 @@ ignore_warnings: True
 seed: null
 
 # passing checkpoint path is necessary
-ckpt_path: ${original_work_dir}/logs/experiments/runs/phla_baseline_smiles/2022-06-30_10-08-00/checkpoints/epoch_061.ckpt
+ckpt_path: ${original_work_dir}/logs/experiments/runs/phla_baseline_kmeans/2022-07-02_14-53-20/checkpoints/epoch_028.ckpt

@@ -1,0 +1,19 @@
+# @package _global_
+
+defaults:
+  - override /datamodule: phla_reverse.yaml
+  - override /model: phla.yaml
+  - override /callbacks: peptide.yaml
+  - override /logger: tensorboard.yaml
+  - override /trainer: default.yaml
+
+
+name: "phla_baseline_reverse"
+
+seed: 1234
+
+trainer:
+  min_epochs: 10
+  max_epochs: 100
+  gpus: 1
+

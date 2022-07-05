@@ -15,6 +15,7 @@ def to_pickle(obj: Any, path: str, force: bool = False) -> str:
             return path
         else:
             with open(path, 'wb') as f:
+                print(f'write pickle into {path}')
                 pickle.dump(obj, f)
             return path
 

@@ -1,0 +1,6 @@
+_target_: src.models.phla_module.PHLALitModule_smooth
+lr: 0.001
+weight_decay: 0.0005
+
+net:
+  _target_: src.models.components.transformer.Transformer
