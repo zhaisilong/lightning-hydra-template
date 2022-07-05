@@ -148,5 +148,7 @@ wandb/
 .env
 .autoenv
 
-# out of box models
+# out of box models and tokenizers
 models
+tokenizers
+
