@@ -151,4 +151,5 @@ wandb/
 # out of box models and tokenizers
 models
 tokenizers
+**/lightning_logs/
 
