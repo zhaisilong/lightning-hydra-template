@@ -8,6 +8,10 @@ torchtext>=0.10.0
 # -------- huggingface ------ #
 transformers>=4.1.0
 
+# ----------- ml ------------ #
+sklearn
+
+
 # --------- hydra --------- #
 hydra-core==1.1.0  # 这个升级了就不能超参数搜索
 hydra-colorlog>=1.1.0
