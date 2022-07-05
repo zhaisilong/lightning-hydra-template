@@ -149,7 +149,7 @@ wandb/
 .autoenv
 
 # out of box models and tokenizers
-models
-tokenizers
+models/
+tokenizers/
 **/lightning_logs/
 
