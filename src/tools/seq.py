@@ -24,6 +24,12 @@ def seq_padding(seq: str,
     else:
         return ' '.join(rt)
 
+def cycle_idx(l, i):
+    """超出索引范围的列表"""
+    if abs(i) < len(l):
+        return l[i]
+    else:
+        return l[i % len(l)]
 
 if __name__ == '__main__':
     print(seq_padding('456', 10, truncate_length=9))
